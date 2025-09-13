@@ -1,13 +1,15 @@
 {
-  "name": "AR-WEDDINGS",
-  "private": true,
+  "name": "AR-weddings",
   "version": "0.0.0",
-  "type": "module",
+  "private": true,
+  "homepage": "https://elcodificad0r.github.io/AR-weddings/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
