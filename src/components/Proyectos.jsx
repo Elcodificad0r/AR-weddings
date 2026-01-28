@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X, Play } from 'lucide-react';
 
+
+
+
 const Proyectos = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -8,61 +11,61 @@ const Proyectos = () => {
   const projects = [
     {
       id: 1,
-      title: "María & Carlos",
-      date: "Octubre 2024",
-      location: "Hacienda San Gabriel",
-      thumbnail: "bg-stone-200",
-      vimeoId: "123456789",
+      title: "Charlene & Enrique",
+      date: "Noviembre 2024",
+      location: "Santiago N.L.",
+      thumbnail: "./img/charlene-enrique.webp",
+      vimeoId: "1027996730",
       description: "Una ceremonia íntima rodeada de naturaleza donde cada momento fue capturado con la sensibilidad que merecía su amor.",
       position: { row: 2, col: 3 }
     },
     {
       id: 2,
-      title: "Ana & Roberto",
-      date: "Septiembre 2024", 
+      title: "Angélica & Alexis",
+      date: "Noviembre 2024", 
       location: "Casa de Campo",
-      thumbnail: "bg-neutral-300",
-      vimeoId: "987654321",
+      thumbnail:"./img/angelica-alexis.webp",
+      vimeoId: "1069026243",
       description: "Un día lleno de emociones auténticas, risas espontáneas y lágrimas de felicidad en un entorno campestre.",
       position: { row: 1, col: 7 }
     },
     {
       id: 3,
-      title: "Laura & Diego",
-      date: "Agosto 2024",
-      location: "Viñedo Valle de Guadalupe", 
-      thumbnail: "bg-gray-200",
-      vimeoId: "456789123",
+      title: "Paola & Carlos",
+      date: "Julio 2025",
+      location: "Viñedo Santiago N.L.", 
+      thumbnail: "./img/paola-carlos.webp",
+      vimeoId: "1105323704",
       description: "Entre viñedos y atardeceres dorados, documentamos una historia de amor que trasciende el tiempo.",
       position: { row: 4, col: 2 }
     },
     {
       id: 4,
-      title: "Sofia & Miguel",
-      date: "Julio 2024",
-      location: "Playa Tulum",
-      thumbnail: "bg-stone-300",
-      vimeoId: "789123456",
-      description: "El sonido de las olas como banda sonora de una ceremonia llena de magia y conexión espiritual.",
+      title: "Kristina & Mike",
+      date: "Mayo 2025",
+      location: "La Herencia, Santiago N.L.",
+      thumbnail: "./img/kristina-mike.webp",
+      vimeoId: "1083300718",
+      description: "El sonido del viento como banda sonora de una ceremonia llena de magia y conexión espiritual.",
       position: { row: 3, col: 6 }
     },
     {
       id: 5,
-      title: "Valeria & Andrés",
-      date: "Junio 2024",
+      title: "Aylin & Emmanuel",
+      date: "Julio 2025",
       location: "Jardín Botánico",
-      thumbnail: "bg-zinc-200", 
-      vimeoId: "321654987",
+      thumbnail: "./img/aylin-emannuel.webp", 
+      vimeoId: "1086249635",
       description: "Rodeados de flora exuberante, capturamos la esencia de un amor que florece naturalmente.",
       position: { row: 5, col: 4 }
     },
     {
       id: 6,
-      title: "Camila & Sebastián",
-      date: "Mayo 2024",
+      title: "Silvi & Francisco",
+      date: "Diciembre 2024",
       location: "Rooftop Ciudad",
-      thumbnail: "bg-slate-200",
-      vimeoId: "654987321", 
+      thumbnail: "./img/silvi-francisco.webp",
+      vimeoId: "1039729495", 
       description: "Con la ciudad como testigo, documentamos una celebración urbana llena de estilo y personalidad.",
       position: { row: 1, col: 1 }
     }
@@ -111,7 +114,7 @@ const Proyectos = () => {
 
   return (
     <div className="min-h-screen bg-white p-8 relative">
-      {/* Grid Container - Experimental Layout */}
+      {/* Grid Container */}
       <div className="relative w-full h-screen">
         {/* Grid Background Dots */}
         <div className="absolute inset-0 opacity-10">
@@ -145,17 +148,19 @@ const Proyectos = () => {
             }}
             onClick={() => openProject(project)}
           >
-            <div className={`
-              w-full h-full ${project.thumbnail} relative overflow-hidden
-              group-hover:shadow-2xl transition-all duration-300
-            `}>
+            <div className="w-full h-full relative overflow-hidden group-hover:shadow-2xl transition-all duration-300">
+              <img 
+                src={project.thumbnail} 
+                alt={project.title} 
+                className="w-full h-full object-cover"
+              />
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                 <Play className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-all duration-300" />
               </div>
               
               {/* Project Number */}
-              <div className="absolute top-2 left-2 text-xs font-light text-gray-600 opacity-70">
+              <div className="absolute top-2 left-2 text-xs font-light text-gray-200 opacity-80 bg-black/30 px-1 rounded">
                 ({project.id.toString().padStart(2, '0')})
               </div>
             </div>

@@ -19,10 +19,10 @@ const Contacto = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Configuración de EmailJS - Reemplaza con tus propios IDs
-  const EMAILJS_SERVICE_ID = 'your_service_id';
-  const EMAILJS_TEMPLATE_ID = 'your_template_id';
-  const EMAILJS_PUBLIC_KEY = 'your_public_key';
+  
+  const EMAILJS_SERVICE_ID = 'service_9ypzsdp';
+  const EMAILJS_TEMPLATE_ID = 'template_wf3xtwj';
+  const EMAILJS_PUBLIC_KEY = 'JTkgeHf5iUW7v_C28';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +45,10 @@ const Contacto = () => {
       'aspectosEmocionantes'
     ];
     
-    return required.every(field => formData[field].trim() !== '');
+    return required.every(field => {
+      const value = formData[field];
+      return value !== null && value !== undefined && String(value).trim() !== '';
+    });
   };
 
   const showAlert = (type, title, text) => {
@@ -82,17 +85,19 @@ const Contacto = () => {
         numero_invitados: formData.numeroInvitados,
         email: formData.email,
         telefono: formData.telefono,
-        otros_contactos: formData.otrosContactos,
+        otros_contactos: formData.otrosContactos || 'No especificado',
         vision_creativa: formData.visionCreativa,
         aspectos_emocionantes: formData.aspectosEmocionantes,
       };
 
-      await emailjs.send(
+      const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
+
+      console.log('EmailJS Response:', response);
 
       showAlert('success', 'Mensaje enviado', 'Hemos recibido tu información. Te contactaremos pronto para comenzar a planear juntos tu día especial.');
       
@@ -110,11 +115,13 @@ const Contacto = () => {
         aspectosEmocionantes: ''
       });
     } catch (error) {
-      console.error('Error sending email:', error);
-      showAlert('error', 'Error al enviar', 'Hubo un problema al enviar tu mensaje. Por favor, intenta nuevamente.');
+      console.error('Error completo:', error);
+      console.error('Error status:', error.status);
+      console.error('Error text:', error.text);
+      showAlert('error', 'Error al enviar', `Hubo un problema al enviar tu mensaje: ${error.text || error.message}. Por favor, intenta nuevamente.`);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleWhatsAppSubmit = () => {
@@ -199,9 +206,9 @@ ${formData.aspectosEmocionantes}
               />
             </div>
 
-            {/* Fecha de boda */}
+            {/* Fecha de boda - Estilo Apple */}
             <div>
-              <label className="block text-sm font-light text-gray-900 mb-2">
+              <label className="block text-sm font-light text-gray-900 mb-3">
                 Fecha de la boda *
               </label>
               <input
@@ -209,7 +216,10 @@ ${formData.aspectosEmocionantes}
                 name="fechaBoda"
                 value={formData.fechaBoda}
                 onChange={handleChange}
-                className="w-full border-b border-gray-300 focus:border-black outline-none py-2 font-light text-gray-900 bg-transparent"
+                className="w-full px-4 py-4 text-lg font-light text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 outline-none transition-all"
+                style={{
+                  colorScheme: 'light'
+                }}
               />
             </div>
 
@@ -243,9 +253,9 @@ ${formData.aspectosEmocionantes}
               />
             </div>
 
-            {/* Número de invitados */}
+            {/* Número de invitados - Estilo Apple con input number mejorado */}
             <div>
-              <label className="block text-sm font-light text-gray-900 mb-2">
+              <label className="block text-sm font-light text-gray-900 mb-3">
                 Número de invitados *
               </label>
               <input
@@ -253,8 +263,10 @@ ${formData.aspectosEmocionantes}
                 name="numeroInvitados"
                 value={formData.numeroInvitados}
                 onChange={handleChange}
-                className="w-full border-b border-gray-300 focus:border-black outline-none py-2 font-light text-gray-900 bg-transparent"
-                placeholder="Aproximadamente"
+                min="1"
+                max="1000"
+                className="w-full px-4 py-4 text-lg font-light text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20 outline-none transition-all"
+                placeholder="Ej: 150"
               />
             </div>
 
@@ -346,7 +358,7 @@ ${formData.aspectosEmocionantes}
               >
                 <Mail size={18} />
                 <span className="font-light">
-                  {isLoading ? 'Enviando...' : 'Enviar por Email'}
+                  {isLoading ? 'Enviando...' : 'Enviar formulario'}
                 </span>
               </button>
               

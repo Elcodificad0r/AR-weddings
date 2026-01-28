@@ -15,7 +15,7 @@ const Somos = () => {
       year: "2019",
       title: "El Inicio",
       subtitle: "AR",
-      image: "bg-stone-300",
+      image: "img/about1.webp",
       content: [
         "Todo comenzó con una cámara y la pasión por contar historias.",
         "Desde entonces, cada boda es un nuevo capítulo que escribimos con luz y movimiento.",
@@ -30,7 +30,7 @@ const Somos = () => {
       year: "2020",
       title: "Filosofía",
       subtitle: "Momentos",
-      image: "bg-neutral-200",
+      image: "img/about2.webp",
       content: [
         "Creemos que cada pareja tiene una historia única que merece ser contada.",
         "No buscamos poses perfectas, buscamos emociones verdaderas.",
@@ -45,7 +45,7 @@ const Somos = () => {
       year: "2021",
       title: "Método",
       subtitle: "Intimidad",
-      image: "bg-gray-200",
+      image: "img/about3.webp",
       content: [
         "Trabajamos como observadores silenciosos de vuestra historia.",
         "Nos adaptamos a vuestro ritmo, respetamos vuestros momentos íntimos.",
@@ -60,7 +60,7 @@ const Somos = () => {
       year: "2022",
       title: "Presente",
       subtitle: "Evolución",
-      image: "bg-stone-200",
+      image: "img/about4.webp",
       content: [
         "Hoy somos un equipo comprometido con la excelencia artística.",
         "Cada proyecto nos enseña algo nuevo sobre el amor y la vida.",
@@ -70,7 +70,6 @@ const Somos = () => {
     },
   ];
 
-  // Detectar scroll y sección activa
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
@@ -80,7 +79,6 @@ const Somos = () => {
       const containerHeight = containerRef.current.offsetHeight;
       const sectionHeight = containerHeight / sections.length;
 
-      // Offset dinámico solo en mobile (más espacio por el navbar)
       const extraOffset = window.innerWidth < 768 ? 140 : 0;
 
       if (
@@ -106,7 +104,6 @@ const Somos = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [sections.length]);
 
-  // GSAP fade in/out
   useEffect(() => {
     sectionRefs.current.forEach((el, index) => {
       if (!el) return;
@@ -183,11 +180,13 @@ const Somos = () => {
 
             {/* Imagen */}
             <div className="relative">
-              <div
-                className={`
-                  w-full aspect-[3/4] ${section.image} relative
-                `}
-              >
+              <div className="w-full aspect-[3/4] relative overflow-hidden">
+                <img
+                  src={section.image}
+                  alt={section.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
                 <div className="absolute bottom-4 right-4 transform rotate-90 origin-bottom-right">
                   <p className="text-xs font-light text-gray-600 tracking-widest">
                     #ARWeddingsStory
@@ -225,7 +224,13 @@ const Somos = () => {
             </div>
 
             <div className="relative">
-              <div className={`w-full aspect-[3/4] ${section.image} relative`}>
+              <div className="w-full aspect-[3/4] relative overflow-hidden">
+                <img
+                  src={section.image}
+                  alt={section.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
                 <div className="absolute bottom-4 right-4 transform rotate-90 origin-bottom-right">
                   <p className="text-xs font-light text-gray-600 tracking-widest">
                     #ARWeddingsStory
@@ -255,7 +260,6 @@ const Somos = () => {
         </div>
       ))}
 
-      {/* Scroll Progress Indicator */}
       {showProgress && (
         <div className="fixed right-8 top-1/2 transform -translate-y-1/2 space-y-3 z-20">
           {sections.map((_, index) => (
@@ -270,7 +274,6 @@ const Somos = () => {
         </div>
       )}
 
-      {/* FIX solo mobile: desactivar sticky y permitir scroll */}
       <style jsx>{`
         @media (max-width: 768px) {
           div.sticky {
