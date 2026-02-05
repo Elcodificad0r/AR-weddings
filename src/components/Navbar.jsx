@@ -67,7 +67,7 @@ const Navbar = () => {
   }, [activeSection]);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
+    <nav className="fixed top-0 left-0 w-full bg-[#F2F2F2] backdrop-blur-sm border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
         {/* Logo */}
         <div className="flex items-baseline space-x-1">
