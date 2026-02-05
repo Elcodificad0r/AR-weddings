@@ -10,7 +10,7 @@ const Proyectos = () => {
       id: 1,
       title: "Charlene & Enrique",
       date: "Noviembre 2024",
-      location: "Santiago N.L.",
+      location: "Fábrica El porvenir, Santiago N.L.",
       thumbnail: "./img/charlene-enrique.webp",
       vimeoId: "1027996730",
       description:
@@ -123,9 +123,11 @@ const Proyectos = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] p-4 md:p-8 relative">
+    <div className="min-h-screen bg-[#F2F2F2] p-4 md:p-8 relative overflow-x-hidden md:overflow-visible">
+
       {/* Grid Container */}
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-screen overflow-x-hidden md:overflow-visible">
+
         {/* Grid Background Dots */}
         <div className="absolute inset-0 opacity-10">
           {Array.from({ length: 12 }, (_, row) =>
