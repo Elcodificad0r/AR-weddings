@@ -157,7 +157,7 @@ const WeddingVideoComponent = () => {
           const titleWords = titleRef.current.querySelectorAll('.word');
 
           window.gsap.set(titleWords, {
-            y: 60,
+            y: 80,
             opacity: 0,
             rotationX: -45
           });
@@ -166,8 +166,8 @@ const WeddingVideoComponent = () => {
             y: 0,
             opacity: 1,
             rotationX: 0,
-            duration: 0.8,
-            stagger: 0.15,
+            duration: 8.8,
+            stagger: 0.35,
             ease: "back.out(1.4)"
           });
         }
@@ -262,7 +262,7 @@ const WeddingVideoComponent = () => {
             <h1
               ref={titleRef}
               className="
-                font-light text-white mb-8 lg:mb-16 text-center leading-[0.9] max-w-[92vw]
+                font-light text-[#F2F2F2] mb-8 lg:mb-16 text-center leading-[0.9] max-w-[92vw]
                 transition-transform duration-300 ease-out
                 group-hover:scale-[1.03]
               "

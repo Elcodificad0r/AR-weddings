@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { X, Play } from "lucide-react";
+import { createPortal } from "react-dom";
 
-const Proyectos = () => {
+
+const Proyectos = ({ parallaxMode = false, parallaxProgress = 1 }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -123,11 +125,14 @@ const Proyectos = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] p-4 md:p-8 relative overflow-x-hidden md:overflow-visible">
-
+    <div
+      className={`
+        relative overflow-x-hidden
+        ${parallaxMode ? "h-screen bg-transparent p-0" : "min-h-screen bg-[#F2F2F2] p-4 md:p-8"}
+      `}
+    >
       {/* Grid Container */}
       <div className="relative w-full h-screen overflow-x-hidden md:overflow-visible">
-
         {/* Grid Background Dots */}
         <div className="absolute inset-0 opacity-10">
           {Array.from({ length: 12 }, (_, row) =>
@@ -148,6 +153,11 @@ const Proyectos = () => {
         {projects.map((project) => {
           const size = getThumbSize(project.id);
 
+          // ✅ micro-parallax (solo cuando está dentro del sticky)
+          const micro = parallaxMode ? 1 - parallaxProgress : 0;
+          const drift = (project.id % 2 === 0 ? 1 : -1) * (18 + project.id * 6);
+          const driftY = (project.id % 3 === 0 ? -1 : 1) * (8 + project.id * 3);
+
           return (
             <div
               key={project.id}
@@ -160,6 +170,10 @@ const Proyectos = () => {
                 left: `clamp(0px, ${project.position.col * 11}%, calc(100% - 120px))`,
                 width: size.width,
                 height: size.height,
+                transform: parallaxMode
+                  ? `translate3d(${drift * micro}px, ${driftY * micro}px, 0)`
+                  : undefined,
+                willChange: parallaxMode ? "transform" : undefined,
               }}
               onClick={() => openProject(project)}
             >
@@ -204,139 +218,134 @@ const Proyectos = () => {
         </div>
       </div>
 
-      {/* Modal */}
-{selectedProject && (
-  <div
-    className={`
-      fixed inset-0 z-50 bg-white
-      transition-all duration-500 ease-out
-      ${isAnimating ? "opacity-0" : "opacity-100"}
-    `}
-  >
-    {/* Close Button */}
-    <button
-      onClick={closeProject}
-      className="fixed top-20 right-4 md:top-8 md:right-8 w-16 h-16 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors duration-300 z-[100] bg-white shadow-lg"
-      aria-label="Cerrar"
+      {selectedProject &&
+  createPortal(
+    <div
+      className={`
+        fixed inset-0 z-[9999] bg-[#F2F2F2]
+        transition-all duration-500 ease-out
+        ${isAnimating ? "opacity-0" : "opacity-100"}
+      `}
     >
-      <X className="w-9 h-9 text-gray-900" />
-    </button>
+      {/* Close Button */}
+      <button
+        onClick={closeProject}
+        className="fixed top-20 right-4 md:top-8 md:right-8 w-16 h-16 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors duration-300 z-[100] bg-white shadow-lg"
+        aria-label="Cerrar"
+      >
+        <X className="w-9 h-9 text-gray-900" />
+      </button>
 
-    {/* Layout del modal */}
-    <div className="relative w-full h-full">
-      {/* =================== DESKTOP DECORATIVOS (no bloquean clicks) =================== */}
-      <div className="hidden md:block absolute inset-0 z-[20] pointer-events-none">
-        {/* Esquina sup izq: número */}
-        <div className="absolute top-10 left-10 text-xs tracking-widest uppercase font-light text-gray-400">
-          ({selectedProject.id.toString().padStart(2, "0")})
+      {/* Layout del modal */}
+      <div className="relative w-full h-full">
+        {/* =================== DESKTOP DECORATIVOS (no bloquean clicks) =================== */}
+        <div className="hidden md:block absolute inset-0 z-[20] pointer-events-none">
+          <div className="absolute top-10 left-10 text-xs tracking-widest uppercase font-light text-gray-400">
+            ({selectedProject.id.toString().padStart(2, "0")})
+          </div>
+
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 text-[10px] tracking-[0.6em] uppercase font-light text-gray-300 rotate-90 origin-right">
+            MAGAZINE
+          </div>
         </div>
 
-        {/* Derecha: MAGAZINE vertical */}
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 text-[10px] tracking-[0.6em] uppercase font-light text-gray-300 rotate-90 origin-right">
-          MAGAZINE
-        </div>
-      </div>
+        {/* =================== MODAL GRID (header / video / footer) =================== */}
+        <div className="relative z-[10] w-full h-full grid grid-rows-[auto_1fr_auto]">
+          {/* ================= HEADER ================= */}
+          <div className="pt-10 md:pt-12 pb-5 md:pb-6 text-center pointer-events-none">
+            <h3 className="text-3xl md:text-5xl font-light text-gray-900 leading-tight">
+              {selectedProject.title}
+            </h3>
+            <div className="mx-auto mt-3 w-12 h-px bg-gray-300" />
+          </div>
 
-      {/* =================== MODAL GRID (header / video / footer) =================== */}
-      <div className="relative z-[10] w-full h-full grid grid-rows-[auto_1fr_auto]">
-        {/* ================= HEADER ================= */}
-        <div className="pt-10 md:pt-12 pb-5 md:pb-6 text-center pointer-events-none">
-          <h3 className="text-3xl md:text-5xl font-light text-gray-900 leading-tight">
+          {/* ================= VIDEO ================= */}
+          <div className="flex items-center justify-center px-4 md:px-10">
+            <div className="w-full max-w-4xl">
+              <div className="relative z-[30] aspect-video bg-black shadow-xl">
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&title=0&byline=0&portrait=0&controls=1`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title={selectedProject.title}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ================= FOOTER ================= */}
+          <div className="px-4 md:px-10 pb-6 md:pb-10 pt-5">
+            <div className="mx-auto max-w-4xl bg-[#F2F2F2] backdrop-blur border border-black/10 shadow-lg">
+              <div className="px-6 py-4">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 text-sm">
+                  <div className="md:col-span-3">
+                    <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
+                      Date
+                    </p>
+                    <p className="text-gray-900 font-light">{selectedProject.date}</p>
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
+                      Location
+                    </p>
+                    <p className="text-gray-900 font-light">{selectedProject.location}</p>
+                  </div>
+
+                  <div className="md:col-span-6">
+                    <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
+                      Notes
+                    </p>
+                    <p className="text-[13px] text-gray-700 leading-relaxed font-light">
+                      {selectedProject.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 border-t border-black/10 pt-3 flex justify-between">
+                  <p className="text-[9px] tracking-[0.45em] uppercase text-gray-400">
+                    AR WEDDINGS
+                  </p>
+                  <p className="text-[9px] tracking-[0.45em] uppercase text-gray-300">
+                    ESC TO CLOSE
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* =================== MOBILE INFO =================== */}
+        <div className="md:hidden absolute inset-x-0 bottom-0 z-[40] bg-[#F2F2F2] backdrop-blur-sm border-t border-gray-200 px-5 py-5">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <span className="text-xs tracking-widest uppercase font-light text-gray-400">
+              ({selectedProject.id.toString().padStart(2, "0")})
+            </span>
+            <div className="w-10 h-px bg-gray-300" />
+          </div>
+
+          <h3 className="text-2xl font-extralight text-gray-900 text-center mb-2">
             {selectedProject.title}
           </h3>
-          <div className="mx-auto mt-3 w-12 h-px bg-gray-300" />
-        </div>
 
-        {/* ================= VIDEO ================= */}
-        <div className="flex items-center justify-center px-4 md:px-10">
-          <div className="w-full max-w-4xl">
-            <div className="relative z-[30] aspect-video bg-black shadow-xl">
-              <iframe
-                src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&title=0&byline=0&portrait=0&controls=1`}
-                className="w-full h-full"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-                title={selectedProject.title}
-              />
-            </div>
-          </div>
-        </div>
+          <p className="text-xs text-gray-500 tracking-wide text-center mb-3">
+            {selectedProject.date} · {selectedProject.location}
+          </p>
 
-        {/* ================= FOOTER ================= */}
-        <div className="px-4 md:px-10 pb-6 md:pb-10 pt-5">
-          <div className="mx-auto max-w-4xl bg-white/90 backdrop-blur border border-black/10 shadow-lg">
-            <div className="px-6 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 text-sm">
-                {/* Date */}
-                <div className="md:col-span-3">
-                  <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
-                    Date
-                  </p>
-                  <p className="text-gray-900 font-light">{selectedProject.date}</p>
-                </div>
+          <p className="text-sm font-light text-gray-600 leading-relaxed text-center mb-3">
+            {selectedProject.description}
+          </p>
 
-                {/* Location */}
-                <div className="md:col-span-3">
-                  <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
-                    Location
-                  </p>
-                  <p className="text-gray-900 font-light">{selectedProject.location}</p>
-                </div>
-
-                {/* Notes */}
-                <div className="md:col-span-6">
-                  <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-1">
-                    Notes
-                  </p>
-                  <p className="text-[13px] text-gray-700 leading-relaxed font-light">
-                    {selectedProject.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 border-t border-black/10 pt-3 flex justify-between">
-                <p className="text-[9px] tracking-[0.45em] uppercase text-gray-400">
-                  AR WEDDINGS
-                </p>
-                <p className="text-[9px] tracking-[0.45em] uppercase text-gray-300">
-                  ESC TO CLOSE
-                </p>
-              </div>
-            </div>
-          </div>
+          <p className="text-xs tracking-widest uppercase font-light text-gray-300 text-center">
+            ESC PARA CERRAR
+          </p>
         </div>
       </div>
-
-      {/* =================== MOBILE INFO (se mantiene tu idea, no tapa el video) =================== */}
-      <div className="md:hidden absolute inset-x-0 bottom-0 z-[40] bg-white/95 backdrop-blur-sm border-t border-gray-200 px-5 py-5">
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <span className="text-xs tracking-widest uppercase font-light text-gray-400">
-            ({selectedProject.id.toString().padStart(2, "0")})
-          </span>
-          <div className="w-10 h-px bg-gray-300" />
-        </div>
-
-        <h3 className="text-2xl font-extralight text-gray-900 text-center mb-2">
-          {selectedProject.title}
-        </h3>
-
-        <p className="text-xs text-gray-500 tracking-wide text-center mb-3">
-          {selectedProject.date} · {selectedProject.location}
-        </p>
-
-        <p className="text-sm font-light text-gray-600 leading-relaxed text-center mb-3">
-          {selectedProject.description}
-        </p>
-
-        <p className="text-xs tracking-widest uppercase font-light text-gray-300 text-center">
-          ESC PARA CERRAR
-        </p>
-      </div>
-    </div>
-  </div>
-)}
-
+    </div>,
+    document.body
+  )}
 
     </div>
   );
